@@ -1,0 +1,6 @@
+c:\HTTP\Casper1\Casper1\bin\Casper1.dll.config
+c:\HTTP\Casper1\Casper1\bin\Casper1.dll
+c:\HTTP\Casper1\Casper1\bin\Casper1.pdb
+c:\HTTP\Casper1\Casper1\obj\Debug\Casper1.csprojResolveAssemblyReference.cache
+c:\HTTP\Casper1\Casper1\obj\Debug\Casper1.dll
+c:\HTTP\Casper1\Casper1\obj\Debug\Casper1.pdb

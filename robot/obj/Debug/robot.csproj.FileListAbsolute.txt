@@ -1,0 +1,6 @@
+C:\HTTP\RobotChallenge\robot\bin\robot.dll.config
+C:\HTTP\RobotChallenge\robot\bin\robot.dll
+C:\HTTP\RobotChallenge\robot\bin\robot.pdb
+C:\HTTP\RobotChallenge\robot\obj\Debug\robot.dll
+C:\HTTP\RobotChallenge\robot\obj\Debug\robot.pdb
+C:\HTTP\RobotChallenge\robot\obj\Debug\robot.csprojResolveAssemblyReference.cache
