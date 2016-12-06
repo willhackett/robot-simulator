@@ -1,43 +1,49 @@
-#Robot Simulator Code Challenge
+#Robot Simulator Code Challenge Submission by Zhenyu Shi
 
 ##Description:
+The project was written in TypeScipt, compiled into JavaScript.
 
-The application is the simulation of a robot moving on a grid tabletop. Dimensions are 10 x 10 units.
-There are no obstructions on the table's surface, and the robot is free to roam around the surface of the table, but must be prevented from falling off the edges.
+##Architecture
+###Robot
+The Robot class uses vector and string enum direction with a Table class (implementing IRegion interface) for simple comparison hit test. The robot.js aslo supports child process mode to accept message from parent process for testing.
 
-Any movement that would result in the robot falling off the edges must be prevented, however further valid movement commands must still be allowed.
+###Test
+Test RobotTester uses complex number and ray caster hit test system. The complex number and ray caster hit test were implemented to demonstrate capability.
 
-Create an application that can read an input file containing a list of commands:
+###Interfaces
+The interfaces are defined in types.ts. 
 
-DROP X,Y,D
-MOVE
-LEFT
-RIGHT
-REPORT
+###Cluster Environment for Test
+Since this is a test for Node.JS full stack, the test was written with node cluster. The MasterController in master.ts (which is the main process) will hold the instances of child processes (robot.js, tester.js and logger.js). Because in the cluster environment, the console.log method of child process may not appear in the expected order, so all the test results were sent to logger.js process to present the funtional test results. So the functional test is an implementation of messaging between 4 node processes.
+The unit tests should also start from the master.js (see below for usage).
 
-DROP will put the robot on the table in at the X & Y coordinates, facing either NORTH, SOUTH, EAST or WEST.
-The coordinates (0,0) can be considered to be the SOUTH WEST most corner.
+*robot.ts* defines the Robot Class.
+*types.ts* defines interfaces consumed by all other files
+*util.ts* defines the DirectionUtil Table for Robot to operate its direction and position. It's separated from robot.ts for unit tests.
+*master.ts* defines the MasterController for managing child process instances and message routing.
+*logger.ts* defines Logger to keep record of funtional test.
+*tester.ts* defines RobotTester, Tester, ComplexNumber and Polygon. RobotTester, ComplexNubmer and Polygon has implemented the robot drop move turn logic in a different algorithm from the Robot Class.
 
-The first valid command to the robot is the DROP command, after that, any sequence of commands may be issued, in any order, including another DROP command. The application should discard all commands in the sequence until a valid PLACE command has been executed.
-
-MOVE will move the robot one unit forward in the direction that it is currently facing.
-
-LEFT and RIGHT will rotate the robot 90 degrees in the specified direction.
-
-REPORT will announce the X, Y and D of the robot. This can just be a simple console output.
-
-##Constraints: 
-The robot must not fall off the table during movement. This also includes the initial placement of the toy robot. Any move that would cause the robot to fall must be ignored.
-
-Example Input and Output:
-
-a) DROP 0,0,NORTH MOVE REPORT Output: 0,1,NORTH
-
-b) DROP 0,0,NORTH LEFT REPORT Output: 0,0,WEST
-
-c) DROP 1,2,EAST MOVE MOVE LEFT MOVE REPORT Output: 3,3,NORTH
-
-Deliverables: The JavaScript (Node JS) source files, the test data and any test code.
-It is not required to provide any graphical output showing the movement of the toy robot.
-
-Please submit your completed products as a pull request to this repository.
+##Example Usage:
+1) load a file to execute
+```CMD
+node robot a.txt
+```
+2) execute commands from command line
+```CMD
+node robot "DROP 2,2,SOUTH MOVE DROP -2,+3,NORTH LEFT RIGHT REPORT"
+```
+Tests:
+1) Unit Test of Dirction and Turning
+```CMD
+node master -d
+```
+2) Unit Test of HitTest
+```CMD
+node master -h
+```
+3) Functional Test
+```CMD
+node master -f 120
+```
+The code above will generate 120 commands and perform functional test.
