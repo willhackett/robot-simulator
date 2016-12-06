@@ -1,4 +1,5 @@
 "use strict";
+const fs = require('fs');
 const util_1 = require('./util');
 /**
  * the Robot class implementing IVector
@@ -118,7 +119,9 @@ let CommandRegEx = /((DROP)\s+([\-\+]?\d+)\s*\,\s*([\-\+]?\d+)\s*\,\s*(NORTH|SOU
  */
 function WrongFormat() {
     console.log('@Warning: Wrong Command Format');
-    console.log('Please try format: node robot.js "DROP 2,2,SOUTH MOVE DROP -2,+3,NORTH LEFT RIGHT REPORT"');
+    console.log('Please try command formats below: ');
+    console.log('node robot.js inputfilename');
+    console.log('node robot.js "DROP 2,2,SOUTH MOVE DROP -2,+3,NORTH LEFT RIGHT REPORT"');
 }
 if (process.send) {
     process.on('message', (value) => {
@@ -135,11 +138,20 @@ else {
     //positive and negative numbers can also be accepted:
     //node robot.js "DROP 2,2,SOUTH MOVE DROP -2,+3,NORTH LEFT RIGHT REPORT"
     if (cmdString) {
+        let commands = [];
+        //try read the input file
+        let filename = __dirname + '/' + cmdString;
+        let data = '';
+        if (fs.existsSync(filename) && fs.statSync(filename).isFile()) {
+            data = fs.readFileSync(filename).toString();
+        }
+        else {
+            data = cmdString;
+        }
         CommandRegEx.lastIndex = undefined;
         let match;
-        let commands = [];
         let index = 0;
-        while (match = CommandRegEx.exec(cmdString)) {
+        while (match = CommandRegEx.exec(data)) {
             if (/^DROP/.test(match[1])) {
                 commands.push({
                     command: match[2], X: Number(match[3]), Y: Number(match[4]), D: match[5], index: index
